@@ -17,20 +17,21 @@ class CNNForFruits(nn.Module):
         # 8*61*61
         # 8*30.5*30.5
         self.conv3 = nn.Conv2d(8, 16, kernel_size=3)
+        self.bn3 = nn.BatchNorm2d(16)
         # 16*28*28
         # 16*14*14
 
-        self.fc1 = nn.Linear(8*30*30, 1200)
+        self.fc1 = nn.Linear(16*26*26, 1200)
         self.dropout = nn.Dropout(0.5)
         self.fc2 = nn.Linear(1200, number_of_classes)
 
     def forward(self, x):
         x = self.pooling(self.relu(self.bn1(self.conv1(x))))
         x = self.pooling(self.relu(self.bn2(self.conv2(x))))
-        # x = self.pooling(self.relu(self.conv3(x)))
+        x = self.pooling(self.relu(self.bn3(self.conv3(x))))
         x = x.view(x.size(0), -1)
         x = self.fc1(x)
-        # x = self.dropout(x)
+        x = self.dropout(x)
         x = self.fc2(x)
 
         return x
