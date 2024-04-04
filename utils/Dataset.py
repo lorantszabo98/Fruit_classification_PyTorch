@@ -3,29 +3,30 @@ from torch.utils.data import random_split, DataLoader
 from utils import config
 import os
 
-train_transfroms = transforms.Compose([
+train_transforms = transforms.Compose([
     transforms.Resize((config.INPUT_SIZE, config.INPUT_SIZE)),
     transforms.RandomVerticalFlip(),
     transforms.RandomHorizontalFlip(),
+    transforms.RandomRotation(degrees=30),
     transforms.ToTensor()
 ])
 
-# test_transforms = transforms.Compose([
-#     transforms.Resize((config.INPUT_SIZE, config.INPUT_SIZE)),
-#     transforms.ToTensor()
-# ])
+test_transforms = transforms.Compose([
+    transforms.Resize((config.INPUT_SIZE, config.INPUT_SIZE)),
+    transforms.ToTensor()
+])
 
 
 def get_dataloaders():
 
     # remove done from the directory names
-    for directory in os.listdir(config.DATA_PATH):
-        new_name = directory.rsplit('_', 1)[0]
-        old_path = os.path.join(config.DATA_PATH, directory)
-        new_path = os.path.join(config.DATA_PATH, new_name)
-        os.rename(old_path, new_path)
+    # for directory in os.listdir(config.DATA_PATH):
+    #     new_name = directory.rsplit('_', 1)[0]
+    #     old_path = os.path.join(config.DATA_PATH, directory)
+    #     new_path = os.path.join(config.DATA_PATH, new_name)
+    #     os.rename(old_path, new_path)
 
-    full_dataset = datasets.ImageFolder(config.DATA_PATH, transform=train_transfroms)
+    full_dataset = datasets.ImageFolder(config.DATA_PATH, transform=train_transforms)
 
     val_test_size = int(0.3 * len(full_dataset))
     train_size = len(full_dataset) - val_test_size
