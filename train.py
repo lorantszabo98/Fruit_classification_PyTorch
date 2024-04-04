@@ -3,15 +3,13 @@ import torch
 import torch.optim as optim
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-from utils.Dataset import get_dataloaders
-from utils.saving_loading_models import save_model
-# import torchvision.models as models
 import torch.backends.cudnn as cudnn
-from utils.model_selector import model_selector
-from utils import config
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.cuda.amp import autocast, GradScaler
+from utils.Dataset import get_dataloaders
 from utils.created_model import CNNForFruits
+from utils.saving_loading_models import save_model
+from utils import config
 
 
 def plot_and_save_training_results(data, label, num_epochs, save_path):
@@ -80,7 +78,7 @@ def train(model, train_loader, val_loader, device, num_epochs=5, additional_text
     # model = nn.DataParallel(model).to(device)
     model.to(device)
 
-    optimizer = optim.SGD(model.parameters(), lr=config.LR)
+    optimizer = optim.SGD(model.parameters(), lr=config.LR, momentum=0.9, weight_decay=0.001)
 
     scheduler = ReduceLROnPlateau(optimizer, threshold=0.01, factor=0.1, patience=3, min_lr=1e-6, verbose=True)
 
