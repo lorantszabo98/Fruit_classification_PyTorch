@@ -127,9 +127,7 @@ if __name__ == "__main__":
     model = CNNForFruits(config.NUMBER_OF_CLASSES)
 
     # Init the test-loader
-    _, _, test_loader = get_dataloaders()
-
-    class_labels = os.listdir(config.DATA_PATH)
+    _, _, test_loader, class_labels = get_dataloaders()
 
     # determine the evaluation metrics
     true_labels, predictions = evaluate(model, config.NUMBER_OF_EPOCHS, test_loader, augmentation='aug', model_structure=True)

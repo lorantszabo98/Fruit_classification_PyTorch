@@ -1,3 +1,4 @@
+import torch
 from torchvision import datasets, transforms
 from torch.utils.data import random_split, DataLoader
 from utils import config
@@ -26,7 +27,11 @@ def get_dataloaders():
     #     new_path = os.path.join(config.DATA_PATH, new_name)
     #     os.rename(old_path, new_path)
 
+    torch.manual_seed(1)
+
     full_dataset = datasets.ImageFolder(config.DATA_PATH, transform=train_transforms)
+    class_labels = os.listdir(config.DATA_PATH)
+    class_labels.sort()
 
     val_test_size = int(0.3 * len(full_dataset))
     train_size = len(full_dataset) - val_test_size
@@ -44,9 +49,9 @@ def get_dataloaders():
 
     train_dataloader = DataLoader(train_dataset, batch_size=config.BATCH_SIZE, shuffle=True, num_workers=2)
     val_dataloader = DataLoader(val_dataset, batch_size=config.BATCH_SIZE, shuffle=True, num_workers=2)
-    test_dataset = DataLoader(test_dataset, batch_size=config.BATCH_SIZE, shuffle=False, num_workers=2)
+    test_dataloader = DataLoader(test_dataset, batch_size=config.BATCH_SIZE, shuffle=False, num_workers=2)
 
-    return train_dataloader, val_dataloader, test_dataset
+    return train_dataloader, val_dataloader, test_dataloader, class_labels
 
 
 
