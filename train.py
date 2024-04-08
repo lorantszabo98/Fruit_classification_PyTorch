@@ -72,10 +72,7 @@ def train(model, train_loader, val_loader, device, num_epochs=5, additional_text
 
     # define criterion and optimizer for training
     criterion = torch.nn.CrossEntropyLoss()
-    # criterion = nn.BCEWithLogitsLoss()
 
-
-    # model = nn.DataParallel(model).to(device)
     model.to(device)
 
     optimizer = optim.SGD(model.parameters(), lr=config.LR, momentum=0.9, weight_decay=0.001)
@@ -87,9 +84,10 @@ def train(model, train_loader, val_loader, device, num_epochs=5, additional_text
     accuracy_tracking = {'train': [], 'val': []}
     loss_tracking = {'train': [], 'val': []}
     best_loss = float('inf')
-    num_of_actual_epochs = 0
+    num_of_actual_epochs = 1
 
     # Early stopping
+    early_stopping = False
     patience = 5
     min_delta = 0.00001
     current_patience = 0
@@ -139,8 +137,12 @@ def train(model, train_loader, val_loader, device, num_epochs=5, additional_text
 
     print('\nFinished Training\n')
 
-    plot_and_save_training_results(loss_tracking, 'loss', num_of_actual_epochs, graphs_and_logs_save_path)
-    plot_and_save_training_results(accuracy_tracking, 'accuracy', num_of_actual_epochs, graphs_and_logs_save_path)
+    if early_stopping:
+        plot_and_save_training_results(loss_tracking, 'loss', num_of_actual_epochs, graphs_and_logs_save_path)
+        plot_and_save_training_results(accuracy_tracking, 'accuracy', num_of_actual_epochs, graphs_and_logs_save_path)
+    else:
+        plot_and_save_training_results(loss_tracking, 'loss', num_epochs, graphs_and_logs_save_path)
+        plot_and_save_training_results(accuracy_tracking, 'accuracy', num_epochs, graphs_and_logs_save_path)
 
     log_file.close()
 
